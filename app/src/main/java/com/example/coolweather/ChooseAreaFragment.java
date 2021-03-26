@@ -108,7 +108,20 @@ public class ChooseAreaFragment extends Fragment {
                     intent.putExtra("countyName",countyList.get(position).getCountyName());
                     startActivity(intent);
                     getActivity().finish();
+                } else if (getActivity() instanceof WeatherActivity) { //instanceof 判断A对象是否属于B类的实例
+                    //已经在WeatherAcitivity中，不需要重新再启动一个
+                    String weatherId = countyList.get(position).getWeatherId();
+
+                    WeatherActivity activity = (WeatherActivity) getActivity();
+                    //关闭 滑动菜单
+                    activity.drawerLayout.closeDrawers();
+                    //调用刷新UI
+                    activity.swipeRefresh.setRefreshing(true);
+                    //请求新选择城市的数据
+                    activity.requestWeather(weatherId);
+
                 }
+
             }
         });
         backButton.setOnClickListener(new View.OnClickListener() {

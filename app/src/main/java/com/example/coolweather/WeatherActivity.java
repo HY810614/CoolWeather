@@ -1,6 +1,9 @@
 package com.example.coolweather;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -12,6 +15,7 @@ import android.text.method.QwertyKeyListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -22,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.example.coolweather.gson.Weather;
 import com.example.coolweather.util.HttpUtil;
 import com.example.coolweather.util.Utility;
+import com.google.android.material.behavior.SwipeDismissBehavior;
 import com.google.gson.Gson;
 import com.qweather.sdk.bean.base.Code;
 import com.qweather.sdk.bean.weather.WeatherDailyBean;
@@ -40,6 +45,12 @@ import okhttp3.Response;
 public class WeatherActivity extends AppCompatActivity {
 
     private static final String TAG = "WeatherActivity";
+
+    public DrawerLayout drawerLayout;
+    private Button navButton;
+
+
+    public SwipeRefreshLayout swipeRefresh;
 
     private ScrollView weatherLayout;
     private TextView titleCity;
@@ -110,6 +121,31 @@ public class WeatherActivity extends AppCompatActivity {
             loadBingPic();
         }
 
+        //下拉刷新
+        swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        swipeRefresh.setColorSchemeResources(R.color.refresh);
+
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //获取最新的天气
+                requestWeather(weatherId);
+            }
+        });
+
+        //侧边栏更新城市
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawe_layout);
+        navButton = (Button) findViewById(R.id.nav_button);
+
+        navButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
+
+
     }
     /**
      * 根据天气id请求城市天气信息
@@ -134,8 +170,8 @@ public class WeatherActivity extends AppCompatActivity {
 
                         Weather weather = new Weather();
                         Log.d(TAG, "onSuccess: " + weatherNowBean.getCode().getCode() );
-                        Toast.makeText(WeatherActivity.this,"请求状态码为：" + weatherNowBean.getCode().getCode(),
-                                Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(WeatherActivity.this,"请求状态码为：" + weatherNowBean.getCode().getCode(),
+//                                Toast.LENGTH_SHORT).show();
                         if (weatherNowBean.getCode().getCode() == "200"){
                             WeatherNowBean.NowBaseBean now = weatherNowBean.getNow();
                             //设置weather各种信息
@@ -235,6 +271,9 @@ public class WeatherActivity extends AppCompatActivity {
                 //添加到父布局
                 forecastLayout.addView(view);
             }
+        //获取完新的信息后 关闭刷新
+        swipeRefresh.setRefreshing(false);
+
         weatherLayout.setVisibility(View.VISIBLE);
     }
 
