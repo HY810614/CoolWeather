@@ -1,6 +1,7 @@
 package com.example.coolweather;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,6 +87,7 @@ public class ChooseAreaFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         //listview注册监听器
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -97,6 +99,15 @@ public class ChooseAreaFragment extends Fragment {
                 } else if (currentLevel == LEVEL_CITY) { //市
                     selectedCity = cityList.get(position); //记录被选择的市
                     queryCounties(); //查询该市的所有县
+                } else if (currentLevel == LEVEL_COUNTY) {
+
+                    String weatherId = countyList.get(position).getWeatherId();
+
+                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                    intent.putExtra("weather_id", weatherId);
+                    intent.putExtra("countyName",countyList.get(position).getCountyName());
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
@@ -111,6 +122,7 @@ public class ChooseAreaFragment extends Fragment {
             }
         });
         queryProvinces(); //一开始县加载所有省的信息
+
     }
     /**
      * 查询全国所有的省，优先从数据库查询，如果没有查询到再去服务器上查询

@@ -1,16 +1,23 @@
 package com.example.coolweather.util;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.coolweather.db.City;
 import com.example.coolweather.db.County;
 import com.example.coolweather.db.Province;
+import com.example.coolweather.gson.Weather;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Utility {
+
+    private static final String TAG = "Utility";
+    
     /**
      * 解析和处理服务器返回的省级数据
      */
@@ -82,5 +89,7 @@ public class Utility {
             }
             return false;
         }
+
+    
 }
 
