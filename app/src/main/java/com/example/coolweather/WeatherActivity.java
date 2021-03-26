@@ -5,6 +5,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.Image;
@@ -106,14 +107,13 @@ public class WeatherActivity extends AppCompatActivity {
         bing_pic_img = (ImageView)findViewById(R.id.bing_pic_img);
 
         temp_text = (TextView)findViewById(R.id.temp_text);
-            //去服务器查询天气
-        String weatherId = getIntent().getStringExtra("weather_id");
-        weatherLayout.setVisibility(View.INVISIBLE);
-
-        requestWeather(weatherId);
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String bingPc = prefs.getString("bing_pc",null);
+            //去服务器查询天气
+
+        String weatherId = getIntent().getStringExtra("weather_id");
+        weatherLayout.setVisibility(View.INVISIBLE);
+        requestWeather(weatherId);
 
         if(bingPc != null) {
             Glide.with(this).load(bingPc).into(bing_pic_img);
@@ -147,6 +147,7 @@ public class WeatherActivity extends AppCompatActivity {
 
 
     }
+
     /**
      * 根据天气id请求城市天气信息
      */
@@ -275,6 +276,10 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefresh.setRefreshing(false);
 
         weatherLayout.setVisibility(View.VISIBLE);
+        //启动服务
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
+
     }
 
     /**
