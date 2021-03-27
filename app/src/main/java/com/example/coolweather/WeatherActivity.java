@@ -247,7 +247,7 @@ public class WeatherActivity extends AppCompatActivity {
         titleCity.setText(cityName);
         titleUpdateTime.setText(updateTime);
         degreeText.setText(degree);
-        feeldegree_text.setText("体感温度为: " + weather.getFeelsLike());
+        feeldegree_text.setText("体感温度为: " + weather.getFeelsLike() + "℃");
         windDir_text.setText("风向：" + weather.getWindDir());
         windScale_text.setText("风力：" + weather.getWindScale() +"级");
         humidity_text.setText("相对湿度：" + weather.getHumidity() + "%");
@@ -277,8 +277,8 @@ public class WeatherActivity extends AppCompatActivity {
 
         weatherLayout.setVisibility(View.VISIBLE);
         //启动服务
-        Intent intent = new Intent(this, AutoUpdateService.class);
-        startService(intent);
+//        Intent intent = new Intent(this, AutoUpdateService.class);
+//        startService(intent);
 
     }
 

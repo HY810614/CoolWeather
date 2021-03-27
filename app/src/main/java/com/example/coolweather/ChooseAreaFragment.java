@@ -3,6 +3,7 @@ package com.example.coolweather;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,8 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class ChooseAreaFragment extends Fragment {
+
+    private static final String TAG = "ChooseAreaFragment";
 
     public static final int LEVEL_PROVINCE = 0;
     public static final int LEVEL_CITY = 1;
@@ -134,6 +137,7 @@ public class ChooseAreaFragment extends Fragment {
                 }
             }
         });
+
         queryProvinces(); //一开始县加载所有省的信息
 
     }
@@ -221,11 +225,13 @@ public class ChooseAreaFragment extends Fragment {
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                Log.d(TAG, "服务器发送请求成功");
                 //将返回的数据转为字符串类型
                 String responseText = response.body().string();
                 //判断解析是否成功
                 boolean result = false;
                 //根据type调用不同的JSON解析 并将解析结果存放到数据库中
+                //解析过程中把获取的数据存放到了数据库
                 if ("province".equals(type)) {
                     result = Utility.handleProvinceResponse(responseText);
                 } else if ("city".equals(type)) {
@@ -255,13 +261,13 @@ public class ChooseAreaFragment extends Fragment {
             //访问服务器失败
             @Override
             public void onFailure(Call call, IOException e) {
+                Log.d(TAG, "服务器请求失败");
             // 通过runOnUiThread()方法回到主线程处理逻辑
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         closeProgressDialog();
-                        Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).
-                                show();
+                        Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
